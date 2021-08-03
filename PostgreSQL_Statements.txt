@@ -1,0 +1,50 @@
+CREATE TABLE users (
+      id integer NOT NULL generated always as identity primary key,
+      firstName varchar(32) NOT NULL,
+      lastName varchar(62) NOT NULL,
+      userType varchar(32) NULL
+);
+
+CREATE TABLE accounts (
+   id integer NOT NULL generated always as identity primary key,
+   balance double precision NULL,
+   accountStatus varchar(32) NULL,
+   accountType varchar(32) NOT NULL,
+   userId integer NOT NULL
+   , CONSTRAINT fk_user
+           foreign key (userId)
+                     references users (id)
+);
+
+CREATE TABLE transfers (
+   id integer NOT NULL generated always as identity primary key,
+   amount double precision NULL,
+   transferredAccountId integer NULL,
+   transfereeAccountId integer NULL,
+   status varchar NULL
+   , CONSTRAINT transferredAccountId
+       foreign key (transferredAccountId )
+           references users (id)
+   , CONSTRAINT transfereeAccountId
+       foreign key (transfereeAccountId)
+           references users (id)
+);
+--
+-- select * from users;
+-- select * from accounts;
+
+insert into users (firstName, lastName, userType) values ('john','doe', 'employee');
+insert into users (firstName, lastName, userType) values ('anthony', 'poleski', 'customer');
+
+insert into accounts (balance, accountStatus, accountType, userId) values (1250.00, 'approved', 'Savings', 1);
+insert into accounts (balance, accountStatus, accountType, userId) values (0.00,   'approved',    'Checkings', 1);
+insert into accounts (balance, accountStatus, accountType, userId) values (0, 'approved' , 'Checkings' , 1);
+insert into accounts (balance, accountStatus, accountType, userId) values (0, 'rejected', 'Checkings', 1);
+insert into accounts (balance, accountStatus, accountType, userId) values (500 ,'approved' , 'Savings' , 2);
+insert into accounts (balance, accountStatus, accountType, userId) values (500 , 'underReview' , 'Checkings' ,    2);
+
+insert into transfers (amount, transferredAccountId, transfereeAccountId, status) values (100, 1  ,  2  ,'underReview');
+
+insert into transfers (amount, transferredAccountId, transfereeAccountId, status) values (50   ,  1  ,  2  ,'accepted');
+insert into transfers (amount, transferredAccountId, transfereeAccountId, status) values (250  ,  2  ,  1  ,'accepted');
+insert into transfers (amount, transferredAccountId, transfereeAccountId, status) values (1500 ,  2  ,  1  ,'underReview');
