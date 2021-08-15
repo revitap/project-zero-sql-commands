@@ -1,0 +1,59 @@
+CREATE TABLE "bankapp".users (
+	id serial NOT NULL,
+	firstname varchar(32) NULL,
+	lastname varchar(62) NULL,
+	usertype varchar(32) NULL,
+	email varchar(120) NOT NULL,
+	pword varchar(120) NOT NULL,
+	CONSTRAINT users_pk PRIMARY KEY (id),
+	CONSTRAINT users_un UNIQUE (email)
+);
+
+CREATE TABLE "bankapp".accounts (
+   id integer NOT NULL generated always as identity primary key,
+   balance double precision NULL,
+   accountStatus varchar(32) NULL,
+   accountType varchar(32) NOT NULL,
+   userId integer NOT NULL
+   , CONSTRAINT fk_user
+           foreign key (userId)
+                     references users (id)
+);
+
+
+CREATE TABLE "bankapp".transfers (
+   id integer NOT NULL generated always as identity primary key,
+   amount double precision NULL,
+   transferredAccountId integer NULL,
+   transfereeAccountId integer NULL,
+   status varchar NULL
+   , CONSTRAINT transferredAccountId
+       foreign key (transferredAccountId )
+           references users (id)
+   , CONSTRAINT transfereeAccountId
+       foreign key (transfereeAccountId)
+           references users (id)
+);
+
+--
+-- select * from "bankapp".users;
+-- select * from "bankapp".accounts;
+
+insert into "bankapp".users (firstName, lastName, userType, email, pword) values ('john', 'doe', 'employee', 'jdoe@email.com', 'password');
+insert into "bankapp".users (firstName, lastName, userType, email, pword) values ('al', 'pacino', 'customer', 'apacino@gmail.com', 'password');
+insert into "bankapp".users (firstName, lastName, userType, email, pword) values ('tom', 'tuttle', 'employee', 'ttuttle@email.com', 'password');
+insert into "bankapp".users (firstName, lastName, userType, email, pword) values ('bobby', 'deniro', 'customer', 'bdeniro@gmail.com', 'password');
+
+insert into "bankapp".accounts (balance, accountStatus, accountType, userId) values (1250.00, 'approved', 'Savings', 1);
+insert into "bankapp".accounts (balance, accountStatus, accountType, userId) values (0.00,   'approved',    'Checkings', 1);
+insert into "bankapp".accounts (balance, accountStatus, accountType, userId) values (0, 'approved' , 'Checkings' , 1);
+insert into "bankapp".accounts (balance, accountStatus, accountType, userId) values (0, 'rejected', 'Checkings', 1);
+insert into "bankapp".accounts (balance, accountStatus, accountType, userId) values (500 ,'approved' , 'Savings' , 2);
+insert into "bankapp".accounts (balance, accountStatus, accountType, userId) values (500 , 'underReview' , 'Checkings' ,    2);
+
+insert into "bankapp".transfers (amount, transferredAccountId, transfereeAccountId, status) values (100, 1  ,  2  ,'underReview');
+
+insert into "bankapp".transfers (amount, transferredAccountId, transfereeAccountId, status) values (50   ,  1  ,  2  ,'accepted');
+insert into "bankapp".transfers (amount, transferredAccountId, transfereeAccountId, status) values (250  ,  2  ,  1  ,'accepted');
+insert into "bankapp".transfers (amount, transferredAccountId, transfereeAccountId, status) values (1500 ,  2  ,  1  ,'underReview');
+
